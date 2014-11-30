@@ -1,3 +1,3 @@
-## An Object-oriented Wordpres Plugin Template to Kickstart Plugin Development. 
+## An Object-oriented Wordpress Plugin Template to Kickstart Plugin Development 
 
 WIP
