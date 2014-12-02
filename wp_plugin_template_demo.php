@@ -10,10 +10,10 @@
  * License: GPL2
  */
 
-
-/*TODO:
-multiple parent page?
-localization
+/*
+* TODO:
+*  Multiple parent page
+*  Localization
 */
 
 defined('ABSPATH') or die("No script kiddies please!");
@@ -24,10 +24,29 @@ require_once('lib/class-pluginframework.php');
 
 class Wp_Plugin_Template_Demo extends Plugin_Framework {
 	
-	protected $name = 'WP Plugin Template Demo'; //Name of plugin to show in Nav panel
-	protected $shortcode = array('shortcode1', 'shortcode2'); //array of shortcodes
-	protected $parentPage = ''; //leave it empty to creat new menu item
-	protected $cronInterval = ''; //specify interval in seconds
+	/*
+	* Name of plugin to show in Nav panel
+	*/
+	protected $name = 'WP Plugin Template Demo'; 
+
+	/*
+	* Array of shortcodes to be used.
+	*/
+	protected $shortcode = array();
+	
+	/*
+	*options-general.php, tools.php etc or leave it empty to creat new menu item
+	*/
+	protected $parentPage = ''; 
+
+	/*
+	* Specify interval in seconds, empty to disable
+	*/
+	protected $cronInterval = '';
+
+	/*
+	* Store plugin options & meta data here.
+	*/
 	protected $defaultOptions = array(
 		'version' => '0.0.1'
 		);
@@ -41,41 +60,31 @@ class Wp_Plugin_Template_Demo extends Plugin_Framework {
 		
 		//add your custom initialization & actions here
 		$this->table = $this->db->prefix . 'plugin_template';
-		
-
 	}
-	
+
+	/*
+	* Enqueue Admin styles & scripts here
+	*/
 	public function admin_enqueue_scripts() {
-		global $hook_suffix; // check this variable first and then use accordingly
+		global $hook_suffix;
+
+		//load these scripts only in plugin pages
 		if (in_array($hook_suffix, $this->page_hooks)) {			
 			wp_enqueue_script('my-admin-script', $this->pluginurl . 'js/' . 'admin-script.js' , array('jquery'));		
 		}
 	}
 	
+	/*
+	* Enqueue frontend styles & scripts here
+	*/
 	public function public_enqueue_scripts() {
-		wp_enqueue_script('jquery');
-		//wp_register_script('jquery-ui', 'http://code.jquery.com/ui/1.10.0/jquery-ui.js', 'jquery');
-		//wp_enqueue_script('jquery-ui');
-		// wp_enqueue_script('my-script', plugins_url('my-script.js', __FILE__), array('jquery'), '1.0', true);
-		//wp_enqueue_style($this->slug . '-style', $this->pluginurl . 'css/' . 'style.css');
+		wp_enqueue_script('jquery');		
 	}
-
 	
-	public function activate_plugin() {		
-		if (isset($this->cronInterval))
-			wp_schedule_event(time(), $this->slug . '_scheduler', $this->slug . '_cron');
-		
-		if (($old_option = get_option($this->optionName))) { //if option already exists
-			//merge new options and keep the values of old options.
-			$merged_option = array_merge($this->defaultOptions, $old_option);
-			update_option($this->optionName, $merged_option);
-		} else {
-			add_option($this->optionName, $this->defaultOptions);
-		}
-		
-		
+	public function activate_plugin() {						
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-				
+		
+		//table schema		
 		$sql = "CREATE TABLE {$this->table} (
 		id mediumint(9) NOT NULL AUTO_INCREMENT,
 		title VARCHAR(50) DEFAULT '' NOT NULL,
@@ -83,6 +92,8 @@ class Wp_Plugin_Template_Demo extends Plugin_Framework {
 		created TIMESTAMP  DEFAULT CURRENT_TIMESTAMP  NOT NULL,
 		UNIQUE KEY id (id)
 		);";
+
+		//dummy data
 		dbDelta($sql);		
 		$this->db->insert($this->table,array(
 	      'title' => 'The Godfather',
@@ -100,18 +111,24 @@ class Wp_Plugin_Template_Demo extends Plugin_Framework {
 		$sql = "DROP TABLE IF EXISTS {$this->table}";		
 		$this->db->query($sql);
 	}
-	
-	
+
+	/*
+	* Hook for cron if enabled
+	*/	
 	public function cron_handler() {
 		
 	}
 	
-	public function shortcode_hook($attr, $content = null, $tag, $code) {
-		
+	/*
+	* Hook for all the shortcodes. 
+	* Use $code argument to differentiate shortcodes
+	*/
+	public function shortcode_hook($attr, $content = null, $code) {
+		$html = "";
 		//load scripts that is only used by this shortcode
 		//wp_enqueue_script('my-script', plugins_url('my-script.js', __FILE__), array('jquery'), '1.0', true);
-		//process depending on $tag value
-		return $content.  $html;
+		
+		return $content.$html;
 	}
 	static function instance() {
 			

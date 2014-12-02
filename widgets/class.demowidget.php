@@ -1,7 +1,6 @@
 <?php
 
-//class name and file name must be same
-class Demowidget_6363 extends WP_Widget {
+class Demo_Widget_6363 extends WP_Widget {
 
 	function __construct() {
 		parent::__construct(
@@ -9,6 +8,7 @@ class Demowidget_6363 extends WP_Widget {
 			__( 'Demowidget' ),
 			array( 'description' => __( 'A simple widget using the framework' ) )
 		);
+		//$this->plugin_instance = Wp_Plugin_Template_Demo::instance();
 
 		if ( is_active_widget( false, false, $this->id_base ) ) {
 			add_action( 'wp_head', array( $this, 'css' ) );

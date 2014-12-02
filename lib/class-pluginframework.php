@@ -26,7 +26,7 @@ if (!class_exists('Plugin_Framework')) {
 				$this->init_actions();			
 				register_activation_hook($this->FILE, array(
 					$this,
-					'activate_plugin'
+					'_activate_plugin'
 				));
 				register_deactivation_hook($this->FILE, array(
 					$this,
@@ -49,7 +49,6 @@ if (!class_exists('Plugin_Framework')) {
 						if(!count($class))	
 							continue;
 						$class = array_shift($class);
-						//$class                = substr($entry, 0, -4); // remove .php and get class name
 						$instance             = new $class();
 						$return               = $instance->menuoptions; //
 						$this->pages[$class] = $instance;
@@ -147,8 +146,12 @@ if (!class_exists('Plugin_Framework')) {
 				$widgets = array();
 				while (($entry = readdir($dir)) !== false) {
 					if (strrchr($entry, '.') === '.php') {
+						$php_classes = get_declared_classes();
 						require_once $this->plugindir . '/widgets/' . $entry;
-						$class = substr($entry, 0, -4); // remove .php and get class name
+						$class = array_diff(get_declared_classes(), $php_classes);						
+						if(!count($class))	
+							continue;
+						$class = array_shift($class);
 						register_widget($class);
 					}
 				}
@@ -308,7 +311,7 @@ if (!class_exists('Plugin_Framework')) {
 			return false;
 		}
 
-		public function activate_plugin() {		
+		public function _activate_plugin() {		
 			if (isset($this->cronInterval))
 				wp_schedule_event(time(), $this->slug . '_scheduler', $this->slug . '_cron');
 			
@@ -319,8 +322,7 @@ if (!class_exists('Plugin_Framework')) {
 			} else {
 				add_option($this->optionName, $this->defaultOptions);
 			}
-						
-			
+			$this->activate_plugin();						
 		}
 		
 		public function deactivate_plugin() {
