@@ -5,7 +5,12 @@
 </style>
 <div class="wrap">    
     <h2><?php echo $title;?></h2>
-    <div id="ajax-response"></div>
+    
+	<?php if(isset($_GET['added'])):?>
+	<div class="updated">
+		<p>New Movie Added!</p>
+	</div>
+	<?php endif;?>  
     <p>Add new movie.</p>
     <form action="" method="post" name="newmov" id="newmov" class="validate">
     	<input type="hidden" name="<?php echo $this->slug . '_controller'; ?>" value="<?php echo $_GET['page'];?>"/>

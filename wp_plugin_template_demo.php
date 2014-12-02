@@ -83,14 +83,21 @@ class Wp_Plugin_Template_Demo extends Plugin_Framework {
 		created TIMESTAMP  DEFAULT CURRENT_TIMESTAMP  NOT NULL,
 		UNIQUE KEY id (id)
 		);";
-		dbDelta($sql);
+		dbDelta($sql);		
+		$this->db->insert($this->table,array(
+	      'title' => 'The Godfather',
+	      'url' => 'http://www.imdb.com/title/tt0068646/?ref_=chttp_tt_2'
+	      ));
+	    $this->db->insert($this->table,array(
+	      'title' => 'The Dark Knight',
+	      'url' => 'http://www.imdb.com/title/tt0468569/?ref_=chttp_tt_4'
+	      ));   
 		
 	}
 	
 	public function deactivate_plugin() {
 		delete_option($this->optionName);
-		$sql = "DROP TABLE IF EXISTS {$this->table}";
-		echo $sql;exit; 
+		$sql = "DROP TABLE IF EXISTS {$this->table}";		
 		$this->db->query($sql);
 	}
 	

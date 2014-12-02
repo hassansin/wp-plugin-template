@@ -1,7 +1,7 @@
 <?php
 defined('ABSPATH') or die("No script kiddies please!");
 
-class Add_Controller extends Wp_Plugin_Template_Demo {
+class Add_Movie extends Wp_Plugin_Template_Demo {
   
   public $menuoptions = array(
     'order' => 0, 
@@ -24,7 +24,7 @@ class Add_Controller extends Wp_Plugin_Template_Demo {
       'title' => $_POST['mov_title'],
       'url' => $_POST['mov_url']
       ));    
-    wp_redirect($this->get_url().'&added=1');
+    wp_redirect($this->get_url().'&added=true');
     exit;
   }
   
